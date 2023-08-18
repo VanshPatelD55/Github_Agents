@@ -5,7 +5,7 @@ from langchain.agents import initialize_agent
 from langchain.agents.agent_toolkits.github.toolkit import GitHubToolkit
 from langchain.llms import OpenAI
 from langchain.utilities.github import GitHubAPIWrapper
-
+import openai
 # Set your environment variables using os.environ
 os.environ["GITHUB_APP_ID"]
 os.environ["GITHUB_APP_PRIVATE_KEY"]
