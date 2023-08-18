@@ -1,4 +1,3 @@
 langchain
 pygithub
-python-dotenv
-openai
+streamlit
