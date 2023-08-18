@@ -5,17 +5,30 @@ from langchain.agents import initialize_agent
 from langchain.agents.agent_toolkits.github.toolkit import GitHubToolkit
 from langchain.llms import OpenAI
 from langchain.utilities.github import GitHubAPIWrapper
-import openai
+
 # Set your environment variables using os.environ
+st.title("GitHub Assistant")
 os.environ["GITHUB_APP_ID"]
 os.environ["GITHUB_APP_PRIVATE_KEY"]
+os.environ["GITHUB_REPOSITORY"] = "shroominic/codeinterpreter-api"
+os.environ["GITHUB_BRANCH"] = "main"
+os.environ["GITHUB_BASE_BRANCH"] = "main"
 os.environ["OPENAI_API_KEY"]
-# Streamlit input fields
-st.title("GitHub Assistant")
+
+
 
 github_repo = st.text_input("GitHub Repository (username/repo-name)")
 github_branch = st.text_input("GitHub Branch")
 github_base_branch = st.text_input("GitHub Base Branch")
+
+if github_repo and github_branch and github_base_branch:
+    os.environ["GITHUB_REPOSITORY"] = github_repo
+    os.environ["GITHUB_BRANCH"] = github_branch
+    os.environ["GITHUB_BASE_BRANCH"] = github_base_branch
+# Streamlit input fields
+
+
+
 prompt = st.text_area("Prompt")
 
 # Initialize components
