@@ -7,9 +7,9 @@ from langchain.llms import OpenAI
 from langchain.utilities.github import GitHubAPIWrapper
 
 # Set your environment variables using os.environ
-os.environ["GITHUB_APP_ID"] = "123456"
-os.environ["GITHUB_APP_PRIVATE_KEY"] = "path/to/your/private-key.pem"
-
+os.environ["GITHUB_APP_ID"]
+os.environ["GITHUB_APP_PRIVATE_KEY"]
+os.environ["OPENAI_API_KEY"]
 # Streamlit input fields
 st.title("GitHub Assistant")
 
