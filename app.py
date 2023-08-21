@@ -9,12 +9,12 @@ from pydantic import ValidationError
 
 # Set your environment variables using os.environ
 st.title("GitHub Assistant")
-os.environ["GITHUB_APP_ID"]
-os.environ["GITHUB_APP_PRIVATE_KEY"]
+os.environ["GITHUB_APP_ID"] = st.secrets['GITHUB_APP_ID']
+os.environ["GITHUB_APP_PRIVATE_KEY"] = st.secrets['GITHUB_APP_PRIVATE_KEY']
 os.environ["GITHUB_REPOSITORY"] = "shroominic/codeinterpreter-api"
 os.environ["GITHUB_BRANCH"] = "main"
 os.environ["GITHUB_BASE_BRANCH"] = "main"
-os.environ["OPENAI_API_KEY"]
+os.environ["OPENAI_API_KEY"] = st.secrets['OPENAI_API_KEY']
 
 
 
