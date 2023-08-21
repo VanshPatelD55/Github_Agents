@@ -3,3 +3,4 @@ pygithub
 streamlit
 openai
 codeboxapi
+jupyter-kernel-gateway
