@@ -5,6 +5,7 @@ from langchain.agents import initialize_agent
 from langchain.agents.agent_toolkits.github.toolkit import GitHubToolkit
 from langchain.llms import OpenAI
 from langchain.utilities.github import GitHubAPIWrapper
+from pydantic import ValidationError
 
 # Set your environment variables using os.environ
 st.title("GitHub Assistant")
@@ -31,9 +32,28 @@ if github_repo and github_branch and github_base_branch:
 
 prompt = st.text_area("Prompt")
 
+
+class GitHubAPIWrapper:
+    def __init__(self):
+        try:
+            # Your code to initialize the GitHubAPIWrapper
+            # This might involve creating an instance of a Pydantic model or performing other operations
+            
+        except ValidationError as e:
+            # Handle the validation error here
+            print("Validation Error:", e)
+            # You can choose to log the error, provide a custom error message, or take any necessary actions
+
+# Create an instance of GitHubAPIWrapper
+try:
+    github = GitHubAPIWrapper()
+except Exception as e:
+    print("Error:", e)
+    # Handle the exception raised during GitHubAPIWrapper instantiation
+    # This could be a ValidationError or any other exception
+
 # Initialize components
 llm = OpenAI(temperature=0)
-github = GitHubAPIWrapper()
 toolkit = GitHubToolkit.from_github_api_wrapper(github)
 agent = initialize_agent(
     toolkit.get_tools(), llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True
