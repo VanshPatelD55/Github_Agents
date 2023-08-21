@@ -59,4 +59,4 @@ if st.button("Run Agent"):
 
 with CodeBox() as codebox:
     result = codebox.run(response)
-    st.image(result)
+    st.write(result)
