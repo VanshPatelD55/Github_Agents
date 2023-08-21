@@ -41,7 +41,7 @@ toolkit = GitHubToolkit.from_github_api_wrapper(github)
 agent = initialize_agent(
     toolkit.get_tools(), llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True
 )
-reponse = ""
+response = ""
 
 # Run the agent when the user clicks the "Run" button
 if st.button("Run Agent"):
