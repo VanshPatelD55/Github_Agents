@@ -9,7 +9,7 @@ from langchain.utilities.github import GitHubAPIWrapper
 # Set your environment variables using os.environ
 st.title("GitHub Assistant")
 os.environ["GITHUB_APP_ID"]
-os.environ["GITHUB_APP_PRIVATE_KEY"] = process.env.GITHUB_APP_PRIVATE_KEY
+os.environ["APP_PRIVATE_KEY"] = process.env.GITHUB_APP_PRIVATE_KEY
 os.environ["GITHUB_REPOSITORY"] = "shroominic/codeinterpreter-api"
 os.environ["GITHUB_BRANCH"] = "main"
 os.environ["GITHUB_BASE_BRANCH"] = "main"
