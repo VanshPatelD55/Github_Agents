@@ -59,4 +59,4 @@ if st.button("Run Agent"):
 
 with CodeBox() as codebox:
     result = codebox.run(response)
-    st.write(result)
+    st.write("<h2>" + response + "</h2>", unsafe_allow_html=True)
