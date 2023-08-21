@@ -4,3 +4,4 @@ streamlit
 openai
 codeboxapi
 jupyter-kernel-gateway
+matplotlib
