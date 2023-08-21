@@ -6,6 +6,7 @@ from langchain.agents.agent_toolkits.github.toolkit import GitHubToolkit
 from langchain.llms import OpenAI
 from langchain.utilities.github import GitHubAPIWrapper
 from pydantic import ValidationError
+from codeboxapi import CodeBox
 
 # Set your environment variables using os.environ
 st.title("GitHub Assistant")
@@ -40,6 +41,7 @@ toolkit = GitHubToolkit.from_github_api_wrapper(github)
 agent = initialize_agent(
     toolkit.get_tools(), llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True
 )
+reponse = ""
 
 # Run the agent when the user clicks the "Run" button
 if st.button("Run Agent"):
@@ -54,3 +56,7 @@ if st.button("Run Agent"):
         st.write(response)
     else:
         st.warning("Please fill in all the input fields.")
+
+with CodeBox() as codebox:
+    result = codebox.run(response)
+    st.write(result)
