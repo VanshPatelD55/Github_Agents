@@ -108,7 +108,6 @@ if cols[0].button("Run Agent", key="run"):
                     st.write(result)
                 
                 # Stop the Streamlit script after the initial run
-                st.experimental_rerun()
                 
             else:
                 st.warning("Agent has already been run. Please reset the input fields to run again.")
