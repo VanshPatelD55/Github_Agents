@@ -57,6 +57,6 @@ if st.button("Run Agent"):
     else:
         st.warning("Please fill in all the input fields.")
 
-with CodeBox() as codebox:
-    result = codebox.run(response)
-    st.write("<h2>" + response + "</h2>", unsafe_allow_html=True)
+# with CodeBox() as codebox:
+#     result = codebox.run(response)
+#     st.write("<h2>" + response + "</h2>", unsafe_allow_html=True)
