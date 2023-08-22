@@ -16,12 +16,9 @@ st.set_page_config(
     layout="wide"
 )
 
-with open('config.json') as f:
-    config_data = json.load(f)
-
-os.environ["GITHUB_APP_ID"] = config_data['GITHUB_APP_ID']
-os.environ["GITHUB_APP_PRIVATE_KEY"] = config_data['GITHUB_APP_PRIVATE_KEY']
-os.environ["OPENAI_API_KEY"] = config_data['OPENAI_API_KEY']
+os.environ["GITHUB_APP_ID"] = st.secrets["GITHUB_APP_ID"]
+os.environ["GITHUB_APP_PRIVATE_KEY"] = st.secrets["GITHUB_APP_PRIVATE_KEY"]
+os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
 # Styling
 st.markdown(
