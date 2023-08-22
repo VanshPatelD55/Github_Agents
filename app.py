@@ -7,31 +7,67 @@ from langchain.llms import OpenAI
 from langchain.utilities.github import GitHubAPIWrapper
 from pydantic import ValidationError
 from codeboxapi import CodeBox
+import json
 
 # Set your environment variables using os.environ
-st.title("GitHub Assistant")
-os.environ["GITHUB_APP_ID"] = st.secrets['GITHUB_APP_ID']
-os.environ["GITHUB_APP_PRIVATE_KEY"] = "vns-genai.2023-08-17.private-key.pem"
-os.environ["GITHUB_REPOSITORY"] = "shroominic/codeinterpreter-api"
-os.environ["GITHUB_BRANCH"] = "main"
-os.environ["GITHUB_BASE_BRANCH"] = "main"
-os.environ["OPENAI_API_KEY"] = st.secrets['OPENAI_API_KEY']
+st.set_page_config(
+    page_title="GitHub Assistant",
+    page_icon=":octocat:",
+    layout="wide"
+)
 
+with open('config.json') as f:
+    config_data = json.load(f)
 
+os.environ["GITHUB_APP_ID"] = config_data['GITHUB_APP_ID']
+os.environ["GITHUB_APP_PRIVATE_KEY"] = config_data['GITHUB_APP_PRIVATE_KEY']
+os.environ["OPENAI_API_KEY"] = config_data['OPENAI_API_KEY']
 
-github_repo = st.text_input("GitHub Repository (username/repo-name)")
-github_branch = st.text_input("GitHub Branch")
-github_base_branch = st.text_input("GitHub Base Branch")
+# Styling
+st.markdown(
+    """
+    <style>
+    .stApp {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: #D3D3D3;
+        padding: 20px;
+        font-family: congenial, sans-serif;
+    }
+    .input-box {
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        background-color: white;
+        font-family: congenial, sans-serif;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
-if github_repo and github_branch and github_base_branch:
-    os.environ["GITHUB_REPOSITORY"] = github_repo
-    os.environ["GITHUB_BRANCH"] = github_branch
-    os.environ["GITHUB_BASE_BRANCH"] = github_base_branch
 # Streamlit input fields
+st.title("GitHub Assistant")
 
+with st.container():
+    github_repo = st.text_input("GitHub Repository (username/repo-name)", key="github_repo")
+    github_branch = st.text_input("GitHub Branch", key="github_branch")
+    github_base_branch = st.text_input("GitHub Base Branch", key="github_base_branch")
 
+    action_options = [
+        "Get Issues", "Get Issue", "Comment on Issue", 
+        "Create Pull Request", "Create File", 
+        "Read File", "Update File", "Delete File"
+    ]
+    selected_action = st.selectbox("Select Action:", action_options, key="selected_action")
 
-prompt = st.text_area("Prompt")
+    # File and folder inputs
+    file_name = st.text_input("Enter File Name (Display folder in addition to file name if exists)", key="file_name")
+
+prompt = selected_action + file_name
+
+# Check if the agent has already been run
 agent_has_run = False
 
 if github_repo and github_branch and github_base_branch:
@@ -39,38 +75,46 @@ if github_repo and github_branch and github_base_branch:
     os.environ["GITHUB_BRANCH"] = github_branch
     os.environ["GITHUB_BASE_BRANCH"] = github_base_branch
 
-if st.button("Run Agent"):
-    if github_repo and github_branch and github_base_branch and prompt:
-        # Initialize components
-        llm = OpenAI(temperature=0)
-        github = GitHubAPIWrapper()
-        toolkit = GitHubToolkit.from_github_api_wrapper(github)
-        agent = initialize_agent(
-            toolkit.get_tools(), llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True
-        )
-        
-        if not agent_has_run:
-            agent_has_run = True
-            final_prompt = f""" 
-               You are a skilled software developer with an in-depth understanding of various programming languages and proficient in performing GitHub operations. 
-               When generating code, please only include code snippets from the given file. 
-               Refrain from adding any additional content to the response. 
-               Ensure that the code provided is correctly formatted and, if necessary, you can complete code snippets that might have errors to ensure they compile successfully.
-               
-               Strictly do not give any other text only and only give code as an output
-               follow the above given instructions while performing prompt given below by the user
-               prompt:{prompt}
-            """
+# Run Agent button
+cols = st.columns([1, 2])
+if cols[0].button("Run Agent", key="run"):
+    with cols[1]:
+        if github_repo and github_branch and github_base_branch and prompt:
+            # Initialize components
+            llm = OpenAI(temperature=0)
+            github = GitHubAPIWrapper()
+            toolkit = GitHubToolkit.from_github_api_wrapper(github)
+            agent = initialize_agent(
+                toolkit.get_tools(), llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True
+            )
             
-            # Run the agent
-            response = agent.run(final_prompt)
-            st.write("Agent Response:")
-            st.write(response)
-            
-            # Display code result
-            with CodeBox() as codebox:
-                result = codebox.run(response)
-                st.write(result)
+            if not agent_has_run:
+                agent_has_run = True
+                final_prompt = f""" 
+                   You are a skilled software developer with an in-depth understanding of various programming languages and proficient in performing GitHub operations. 
+                   When generating code, please only include code snippets from the given file. 
+                   Refrain from adding any additional content to the response. 
+                   Ensure that the code provided is correctly formatted and, if necessary, you can complete code snippets that might have errors to ensure they compile successfully.
+
+
+                   follow the above given instructions while performing prompt given below by the user
+                   prompt:{prompt}
+                   Strictly do not give any other text, only and only give code as an output
+                """
                 
-        else:
-            st.warning("Agent has already been run. Please reset the input fields to run again.")
+                # Run the agent
+                response = agent.run(final_prompt)
+                st.write(response)
+                # Display code result
+                with CodeBox() as codebox:
+                    result = codebox.run(response)
+                    st.write(result)
+                
+                # Stop the Streamlit script after the initial run
+                st.experimental_rerun()
+                
+            else:
+                st.warning("Agent has already been run. Please reset the input fields to run again.")
+            
+            # Reset the agent_has_run flag to allow running again
+            agent_has_run = False
