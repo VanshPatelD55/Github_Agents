@@ -17,7 +17,7 @@ st.set_page_config(
 )
 
 os.environ["GITHUB_APP_ID"] = st.secrets["GITHUB_APP_ID"]
-os.environ["GITHUB_APP_PRIVATE_KEY"] = st.secrets["GITHUB_APP_PRIVATE_KEY"]
+os.environ["GITHUB_APP_PRIVATE_KEY"] = "vns-genai.2023-08-17.private-key.pem"
 os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
 # Styling
