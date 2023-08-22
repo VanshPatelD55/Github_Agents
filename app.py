@@ -105,6 +105,7 @@ if cols[0].button("Run Agent", key="run"):
                 # Display code result
                 with CodeBox() as codebox:
                     result = codebox.run(response)
+                    codebox.stop()
                     st.write(result)
                 
                 # Stop the Streamlit script after the initial run
