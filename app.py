@@ -107,8 +107,9 @@ if cols[0].button("Run Agent", key="run"):
                 # Display code result
                 with CodeBox() as codebox:
                     result = codebox.run(response)
+                    encoded_data = result
                     codebox.stop()
-                    image = Image.open(io.BytesIO(result))
+                    image = Image.open(io.BytesIO(encoded_data))
                     st.image(image, caption='My Captured Image', use_column_width=True)
                 
                 # Stop the Streamlit script after the initial run
