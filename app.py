@@ -11,6 +11,7 @@ import json
 from PIL import Image
 import base64
 from io import BytesIO
+import subprocess
 
 # Set your environment variables using os.environ
 st.set_page_config(
@@ -107,14 +108,14 @@ if cols[0].button("Run Agent", key="run"):
                 st.write(response)
                 # Display code result
                 with CodeBox() as codebox:
-                    result = codebox.run(response)
-                    encoded_data = result
+                    # result = codebox.run(response)
+                    # encoded_data = result
+                    process = subprocess.Popen(['codebox', '-o', 'base64'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+                    process.stdin.write(b(response))
+                    output = process.stdout.read().decode('utf-8').strip()
+                    process.close()
+                    st.image(output)
                     codebox.stop()
-                    encoded_data = encoded_data.replace("data:image/png;base64,", "")
-                    decoded_data = base64.b64decode(encoded_data)
-                    image_buffer = BytesIO(decoded_data)
-                    image = Image.open(image_buffer)
-                    st.image(image, caption='Decoded Image', use_column_width=True)
                 
                 # Stop the Streamlit script after the initial run
                 
