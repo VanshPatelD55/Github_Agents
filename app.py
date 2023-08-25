@@ -9,7 +9,8 @@ from pydantic import ValidationError
 from codeboxapi import CodeBox
 import json
 from PIL import Image
-import io
+import base64
+from io import BytesIO
 
 # Set your environment variables using os.environ
 st.set_page_config(
@@ -109,8 +110,11 @@ if cols[0].button("Run Agent", key="run"):
                     result = codebox.run(response)
                     encoded_data = result
                     codebox.stop()
-                    image = Image.open(io.BytesIO(encoded_data))
-                    st.image(image, caption='My Captured Image', use_column_width=True)
+                    encoded_data = encoded_data.replace("data:image/png;base64,", "")
+                    decoded_data = base64.b64decode(encoded_data)
+                    image_buffer = BytesIO(decoded_data)
+                    image = Image.open(image_buffer)
+                    st.image(image, caption='Decoded Image', use_column_width=True)
                 
                 # Stop the Streamlit script after the initial run
                 
