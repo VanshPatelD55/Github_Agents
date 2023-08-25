@@ -8,6 +8,8 @@ from langchain.utilities.github import GitHubAPIWrapper
 from pydantic import ValidationError
 from codeboxapi import CodeBox
 import json
+from PIL import Image
+import io
 
 # Set your environment variables using os.environ
 st.set_page_config(
@@ -106,7 +108,8 @@ if cols[0].button("Run Agent", key="run"):
                 with CodeBox() as codebox:
                     result = codebox.run(response)
                     codebox.stop()
-                    st.write(result)
+                    image = Image.open(io.BytesIO(result))
+                    st.image(image, caption='My Captured Image', use_column_width=True)
                 
                 # Stop the Streamlit script after the initial run
                 
